@@ -1,0 +1,1 @@
+export const category=['Civil','Architecture','Electrical','Mechanical','Others']
