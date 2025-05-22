@@ -10,7 +10,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const Category = () => {
   const [formData, setFormData] = useState({
-    category:'' ,
+    category:'',
     image: '',
   });
   const [categories, setCategories] = useState([]);
@@ -39,12 +39,20 @@ const Category = () => {
         console.log("Category added:", formData);
       }
 
-      setFormData({});
+      setFormData({
+        category: "",
+        image: "",
+      });
       setEditId(null);
       await getCategories();
     } catch (error) {
       console.error("Error submitting form:", error);
     }
+
+    setFormData({
+      category: "",
+      image: "",
+    });
   };
 
   const getCategories = async (search) => {
@@ -62,7 +70,7 @@ const Category = () => {
   };
 
   const handleEdit = (category) => {
-    console.log(category,'category');
+    
     setFormData({
       category: category.category,
       image: category.image || "",
@@ -72,7 +80,10 @@ const Category = () => {
   };
 
   const handleCancelEdit = () => {
-    setFormData({});
+    setFormData({
+      category: "",
+      image: "",
+    });
     setEditId(null);
   };
 
@@ -82,7 +93,6 @@ const Category = () => {
    
   }, [search]);
 
-console.log(categories,'search');
 
 
   return (

@@ -3,10 +3,13 @@ import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const CategoryCard = ({name, onEdit, onDelete,image , isEditing}) => {
   return (
-    <div className="border border-slate-300 rounded-sm p-2">
-      <img className="w-full mb-2 rounded-sm" src={image} alt="" />
-      <div className="flex justify-between items-center  rounded-sm">
+    <div className="border border-slate-300 rounded-sm p-2 flex gap-2 justify-between items-center bg-white">
+      <div className="flex gap-2 items-center">
+      <img className="h-12  rounded-sm" src={image} alt="" />
         <p className="">{name}</p>
+
+      </div>
+      <div className="flex justify-between items-center  rounded-sm">
         {!isEditing && (
           <div className="flex items-center gap-2 justify-between">
             <PencilIcon

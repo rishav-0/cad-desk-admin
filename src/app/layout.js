@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
       <body>
         <div className="flex h-screen">
           <Sidebar />
-          <div className="flex-1 overflow-auto p-8 bg-gray-100">
+          <div className="flex-1 overflow-auto p-8 ">
             {children}
           </div>
         </div>
