@@ -5,36 +5,10 @@ import { category } from "@/utils";
 import CourseCard from "@/components/CourseCard";
 import CourseForm from "@/components/CourseForm";
 
-
 const CoursesPage = () => {
   // States
   const [showForm, setShowForm] = useState(false);
-  const [courses, setCourses] = useState([
-    // Sample course for testing
-    {
-      id: 1,
-      title: "Sample Course",
-      description: "This is a sample course description",
-      price: "999",
-      lessons: "10",
-      students: "50",
-      duration: "4 weeks",
-      certification: true,
-      difficulty: "beginner",
-      languages: ["english"],
-      tableOfContents: [
-        { title: "Introduction", detail: "Course overview" },
-        { title: "Chapter 1", detail: "Getting started" },
-      ],
-      additionalResources: [
-        { title: "PDF Guide", link: "https://example.com/guide.pdf" },
-      ],
-      materials: ["Laptop", "Notebook"],
-      prerequisites: "Basic programming knowledge",
-      assignment: "Complete the practice exercises",
-      category: "Programming",
-    },
-  ]);
+  const [courses, setCourses] = useState([]);
   const [editingId, setEditingId] = useState(null);
 
   const initialCourseState = {
@@ -191,9 +165,22 @@ const CoursesPage = () => {
   const handleEdit = (courseToEdit) => {
     setEditingId(courseToEdit.id);
 
-    setCourse({
-      ...initialCourseState,
+    // Create a complete clone of the course object to ensure all nested arrays are properly copied
+    const courseClone = {
       ...courseToEdit,
+      // Ensure each property is properly initialized
+      title: courseToEdit.title || "",
+      description: courseToEdit.description || "",
+      price: courseToEdit.price || "",
+      lessons: courseToEdit.lessons || "",
+      students: courseToEdit.students || "",
+      duration: courseToEdit.duration || "",
+      certification: Boolean(courseToEdit.certification),
+      difficulty: courseToEdit.difficulty || "moderate",
+      category: courseToEdit.category || "",
+      prerequisites: courseToEdit.prerequisites || "",
+      assignment: courseToEdit.assignment || "",
+      // Ensure arrays are properly cloned
       languages: Array.isArray(courseToEdit.languages)
         ? [...courseToEdit.languages]
         : [],
@@ -206,21 +193,19 @@ const CoursesPage = () => {
       materials: Array.isArray(courseToEdit.materials)
         ? [...courseToEdit.materials]
         : [],
-    });
+    };
 
-    setShowForm(true); // Only once
+    setCourse(courseClone);
+    setShowForm(true);
 
-    // Optional: wait one tick to see updated state in log
-    setTimeout(() => {
-      console.log("Editing course:", courseToEdit);
-    }, 0);
+    // Debug log
+    console.log("Editing course:", courseClone);
   };
 
-
   // Delete course
-  const handleDelete = (id) => {
+  const handleDelete = (courseToDelete) => {
     if (confirm("Are you sure you want to delete this course?")) {
-      setCourses(courses.filter((course) => course.id !== id));
+      setCourses(courses.filter((course) => course.id !== courseToDelete.id));
     }
   };
 
