@@ -1,15 +1,33 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "@/components/Input";
-import { category } from "@/utils";
-import CourseCard from "@/components/CourseCard";
+import {
+  Drawer,
+  Button,
+  Typography,
+  IconButton,
+} from "@material-tailwind/react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+
 import CourseForm from "@/components/CourseForm";
+import { fetchCategories } from "@/service/categories";
+import { MagnifyingGlassIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { fetchCourses } from "@/service/courses";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { db } from "@/firebase";
+
 
 const CoursesPage = () => {
   // States
   const [showForm, setShowForm] = useState(false);
   const [courses, setCourses] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [categories,setCategories] = useState([])
+  const [search,setSearch] = useState('')
+
+  const [open, setOpen] = useState(false);
+  const openDrawer = () => setOpen(true);
+  const closeDrawer = () => setOpen(false);
 
   const initialCourseState = {
     title: "",
@@ -30,7 +48,23 @@ const CoursesPage = () => {
   };
 
   const [course, setCourse] = useState(initialCourseState);
-  const categories = category;
+
+  const getCategories= async ()=>{
+     const res = await fetchCategories()
+     setCategories(res)
+  }
+
+  const getCourses = async ()=>{
+    const res =  await fetchCourses()
+    setCourses(res)
+  }
+
+  useEffect(()=>{
+    getCategories() 
+    getCourses()
+  },[])
+
+
 
   // Reset form
   const resetForm = () => {
@@ -139,7 +173,7 @@ const CoursesPage = () => {
   };
 
   // Form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!course.title || !course.description || !course.category) {
@@ -148,17 +182,14 @@ const CoursesPage = () => {
     }
 
     if (editingId) {
-      setCourses(
-        courses.map((c) =>
-          c.id === editingId ? { ...course, id: editingId } : c
-        )
-      );
+      await updateDoc(doc(db, "courses", editingId), course);
     } else {
-      setCourses([...courses, { ...course, id: Date.now().toString() }]);
+      await addDoc(collection(db, "courses"), course);
     }
 
     setShowForm(false);
     resetForm();
+    getCourses();
   };
 
   // Edit course - properly populate all fields
@@ -199,15 +230,20 @@ const CoursesPage = () => {
     setShowForm(true);
 
     // Debug log
-    console.log("Editing course:", courseClone);
+    // console.log("Editing course:", courseClone);
   };
 
   // Delete course
-  const handleDelete = (courseToDelete) => {
-    if (confirm("Are you sure you want to delete this course?")) {
-      setCourses(courses.filter((course) => course.id !== courseToDelete.id));
-    }
+ const deleteCourse = async (id) => {
+    await handleDelete({
+      collection: "courses",
+      id,
+      onSuccess: getCourses,
+    });
+    getCourses();
   };
+
+  // console.log(courses,'courses');
 
   return (
     <div className="container mx-auto p-4">
@@ -220,31 +256,66 @@ const CoursesPage = () => {
           Create New Course
         </button>
       </div>
-
       {/* Course Form Modal */}
-      <CourseForm
-        showForm={showForm}
-        toggleForm={toggleForm}
-        editingId={editingId}
-        course={course}
-        categories={categories}
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-        handleLanguageChange={handleLanguageChange}
-        updateTocItem={updateTocItem}
-        removeTocItem={removeTocItem}
-        addTocItem={addTocItem}
-        updateResource={updateResource}
-        removeResource={removeResource}
-        addResource={addResource}
-        updateMaterial={updateMaterial}
-        removeMaterial={removeMaterial}
-        addMaterial={addMaterial}
-      />
+      <Drawer
+        placement="right"
+        open={showForm}
+        onClose={() => setShowForm(false)}
+        className="p-4 overflow-auto"
+        size={800}
+        overlayProps={{
+          className: "backdrop-blur-xs bg-white/30",
+        }}
+      >
+        {/* <div className="mb-4 flex items-center justify-between">
+          <Typography variant="h5" color="blue-gray">
+            {editingId ? "Edit Course" : "Create Course"}
+          </Typography>
+          <IconButton
+            variant="text"
+            color="blue-gray"
+            onClick={() => setShowForm(false)}
+          >
+            <XMarkIcon className="h-5 w-5" />
+          </IconButton>
+        </div> */}
 
+        <CourseForm
+          showForm={showForm}
+          toggleForm={() => setShowForm(false)}
+          editingId={editingId}
+          course={course}
+          categories={categories}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          handleLanguageChange={handleLanguageChange}
+          updateTocItem={updateTocItem}
+          removeTocItem={removeTocItem}
+          addTocItem={addTocItem}
+          updateResource={updateResource}
+          removeResource={removeResource}
+          addResource={addResource}
+          updateMaterial={updateMaterial}
+          removeMaterial={removeMaterial}
+          addMaterial={addMaterial}
+        />
+      </Drawer>
+
+      {/* <CardDefault /> */}
+      <hr />
+      <p className="font-semibold my-4">Course List</p>
+      {/* <div className="flex gap-2 mb-4 border-b border-slate-300 py-1">
+        <MagnifyingGlassIcon className="w-5 text-slate-400" />
+        <input
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full outline-0"
+          placeholder="Search Categories"
+          type="text"
+        />
+      </div> */}
       {/* Courses List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses.map((course) => (
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {courses?.map((course) => (
           <CourseCard
             course={course}
             key={course.id}
@@ -252,11 +323,95 @@ const CoursesPage = () => {
             handleEdit={() => handleEdit(course)}
           />
         ))}
-      </div>
-
-      {courses.length === 0 && (
-        <div className="text-center py-12 text-gray-500">
-          No courses found. Create your first course!
+      </div> */}
+      {courses.length === 0 ? (
+        <div className="text-center py-12 text-gray-500">No courses found.</div>
+      ) : (
+        <div className="overflow-x-auto rounded-lg border border-gray-200 ">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Course name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Price
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Category
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Certification
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Difficulty
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {courses.map((course) => (
+                <tr
+                  key={course.id}
+                  className="hover:bg-gray-50 transition-colors"
+                >
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className=" font-semibold text-gray-900">
+                        {course.title}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className=" text-gray-900 font-semibold">
+                      ₹{course.price}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="px-2 py-1  font-semibold ">
+                      {course.category}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {course.certification ? (
+                      <span className="px-2 py-1  font-semibold rounded-full ">
+                        Yes
+                      </span>
+                    ) : (
+                      <span className="px-2 py-1  font-semibold rounded-full">
+                        No
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 py-1 font-semibold rounded-full`}>
+                      {course.difficulty}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => handleEdit(course)}
+                        className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50"
+                        title="Edit"
+                      >
+                        <PencilIcon className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => deleteCourse(course.id)}
+                        className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
+                        title="Delete"
+                      >
+                        <TrashIcon className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

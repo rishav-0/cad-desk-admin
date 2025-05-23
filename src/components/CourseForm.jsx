@@ -24,8 +24,8 @@ const CourseForm = ({
   if (!showForm) return null;
 
   return (
-    <div className="fixed inset-0 bg-white bg-opacity-0 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6">
+    
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl  p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">
             {editingId ? "Edit Course" : "Create New Course"}
@@ -64,15 +64,15 @@ const CourseForm = ({
               >
                 <option value="">Select Category</option>
                 {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
+                  <option key={cat.id} value={cat.category}>
+                    {cat.category}
                   </option>
                 ))}
               </select>
             </div>
 
             <Input
-              label="Price (₹)"
+              label="Price"
               placeholder="Enter course price"
               name="price"
               type="number"
@@ -117,9 +117,9 @@ const CourseForm = ({
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option value="beginner">Beginner</option>
-                <option value="moderate">Moderate</option>
-                <option value="hard">Hard</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Hard">Hard</option>
               </select>
             </div>
 
@@ -130,9 +130,11 @@ const CourseForm = ({
                 checked={course.certification}
                 onChange={handleChange}
                 className="mr-2"
+                
               />
-              <label className="text-sm font-medium">
-                Offers Certification
+              <label className="text-sm gap-1 flex font-medium">
+                Offers Certification 
+                {/* <span className="text-red-500">*</span> */}
               </label>
             </div>
           </div>
@@ -338,7 +340,7 @@ const CourseForm = ({
           </div>
         </form>
       </div>
-    </div>
+  
   );
 };
 
