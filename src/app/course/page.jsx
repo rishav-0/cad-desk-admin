@@ -15,6 +15,7 @@ import { MagnifyingGlassIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/
 import { fetchCourses } from "@/service/courses";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
+import { handleDelete } from "@/service/handleDelete";
 
 
 const CoursesPage = () => {
@@ -25,9 +26,7 @@ const CoursesPage = () => {
   const [categories,setCategories] = useState([])
   const [search,setSearch] = useState('')
 
-  const [open, setOpen] = useState(false);
-  const openDrawer = () => setOpen(true);
-  const closeDrawer = () => setOpen(false);
+
 
   const initialCourseState = {
     title: "",
@@ -243,7 +242,7 @@ const CoursesPage = () => {
     getCourses();
   };
 
-  // console.log(courses,'courses');
+  console.log(courses,'courses');
 
   return (
     <div className="container mx-auto p-4">
@@ -264,7 +263,7 @@ const CoursesPage = () => {
         className="p-4 overflow-auto"
         size={800}
         overlayProps={{
-          className: "backdrop-blur-xs bg-white/30",
+          className: "backdrop-blur-sm bg-white/30",
         }}
       >
         {/* <div className="mb-4 flex items-center justify-between">
@@ -304,26 +303,7 @@ const CoursesPage = () => {
       {/* <CardDefault /> */}
       <hr />
       <p className="font-semibold my-4">Course List</p>
-      {/* <div className="flex gap-2 mb-4 border-b border-slate-300 py-1">
-        <MagnifyingGlassIcon className="w-5 text-slate-400" />
-        <input
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full outline-0"
-          placeholder="Search Categories"
-          type="text"
-        />
-      </div> */}
-      {/* Courses List */}
-      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses?.map((course) => (
-          <CourseCard
-            course={course}
-            key={course.id}
-            handleDelete={() => handleDelete(course)}
-            handleEdit={() => handleEdit(course)}
-          />
-        ))}
-      </div> */}
+     
       {courses.length === 0 ? (
         <div className="text-center py-12 text-gray-500">No courses found.</div>
       ) : (
