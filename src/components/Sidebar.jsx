@@ -27,6 +27,14 @@ export default function Sidebar() {
         >
           Course
         </Link>
+        <Link
+          href="/banner"
+          className={`block p-2 rounded hover:bg-black hover:text-white transition-colors ${
+            pathname === "/banner" ? "bg-black text-white" : ""
+          }`}
+        >
+          Banner
+        </Link>
       </nav>
     </div>
   );
