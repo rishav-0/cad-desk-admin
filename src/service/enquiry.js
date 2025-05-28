@@ -1,17 +1,17 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 
-export const fetchCourses = async (id) => {
-
+export const fetchEnquiryData = async (id) => {
+  
   const conditions = [];
 
   if (id) {
     conditions.push(where("id", "==", id));
   }
- 
+
   const q = conditions.length
-    ? query(collection(db, "courses"), ...conditions)
-    : collection(db, "courses");
+    ? query(collection(db, "enquiry"), ...conditions)
+    : collection(db, "enquiry");
 
   const querySnapshot = await getDocs(q);
 

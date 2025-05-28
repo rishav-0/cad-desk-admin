@@ -101,7 +101,7 @@ const Category = () => {
         {EditId ? "Edit Category" : "Create Category"}
       </p>
       <br />
-      <form className="mb-4" onSubmit={handleSubmit}>
+      <form className="mb-8" onSubmit={handleSubmit}>
         <div className="flex gap-4">
           <Input
             label="Category Name"

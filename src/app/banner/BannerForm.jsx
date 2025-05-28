@@ -247,7 +247,7 @@ const Bannerform = ({
                         <tr
                           key={i.id}
                           className={`border-b hover:bg-gray-50 ${
-                            isSelected ? "bg-green-50" : ""
+                            isSelected ? "bg-blue-50" : ""
                           }`}
                         >
                           <td className="px-4 py-2">

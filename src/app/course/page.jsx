@@ -11,26 +11,35 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import CourseForm from "@/components/CourseForm";
 import { fetchCategories } from "@/service/categories";
-import { MagnifyingGlassIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  MagnifyingGlassIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { fetchCourses } from "@/service/courses";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 import { handleDelete } from "@/service/handleDelete";
-
+import Link from "next/link";
 
 const CoursesPage = () => {
   // States
   const [showForm, setShowForm] = useState(false);
   const [courses, setCourses] = useState([]);
   const [editingId, setEditingId] = useState(null);
-  const [categories,setCategories] = useState([])
-  const [search,setSearch] = useState('')
+  const [categories, setCategories] = useState([]);
+  const [detailId, setDetailId] = useState("");
 
+  console.log(detailId, "id");
 
+  const handleDetail = (detailId) => {
+    setDetailId(detailId);
+  };
 
   const initialCourseState = {
     title: "",
     description: "",
+    image:'',
     price: "",
     lessons: "",
     students: "",
@@ -48,22 +57,20 @@ const CoursesPage = () => {
 
   const [course, setCourse] = useState(initialCourseState);
 
-  const getCategories= async ()=>{
-     const res = await fetchCategories()
-     setCategories(res)
-  }
+  const getCategories = async () => {
+    const res = await fetchCategories();
+    setCategories(res);
+  };
 
-  const getCourses = async ()=>{
-    const res =  await fetchCourses()
-    setCourses(res)
-  }
+  const getCourses = async () => {
+    const res = await fetchCourses();
+    setCourses(res);
+  };
 
-  useEffect(()=>{
-    getCategories() 
-    getCourses()
-  },[])
-
-
+  useEffect(() => {
+    getCategories();
+    getCourses();
+  }, []);
 
   // Reset form
   const resetForm = () => {
@@ -175,7 +182,7 @@ const CoursesPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!course.title || !course.description || !course.category) {
+    if (!course.title || !course.description || !course.category || !course.image) {
       alert("Please fill all required fields");
       return;
     }
@@ -200,6 +207,7 @@ const CoursesPage = () => {
       ...courseToEdit,
       // Ensure each property is properly initialized
       title: courseToEdit.title || "",
+      image:courseToEdit.image || "",
       description: courseToEdit.description || "",
       price: courseToEdit.price || "",
       lessons: courseToEdit.lessons || "",
@@ -233,7 +241,7 @@ const CoursesPage = () => {
   };
 
   // Delete course
- const deleteCourse = async (id) => {
+  const deleteCourse = async (id) => {
     await handleDelete({
       collection: "courses",
       id,
@@ -241,8 +249,6 @@ const CoursesPage = () => {
     });
     getCourses();
   };
-
-  console.log(courses,'courses');
 
   return (
     <div className="container mx-auto p-4">
@@ -303,7 +309,7 @@ const CoursesPage = () => {
       {/* <CardDefault /> */}
       <hr />
       <p className="font-semibold my-4">Course List</p>
-     
+
       {courses.length === 0 ? (
         <div className="text-center py-12 text-gray-500">No courses found.</div>
       ) : (
@@ -329,6 +335,9 @@ const CoursesPage = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Detail
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -350,23 +359,23 @@ const CoursesPage = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="px-2 py-1  font-semibold ">
+                    <span className=" font-semibold ">
                       {course.category}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {course.certification ? (
-                      <span className="px-2 py-1  font-semibold rounded-full ">
+                      <span className=" font-semibold rounded-full ">
                         Yes
                       </span>
                     ) : (
-                      <span className="px-2 py-1  font-semibold rounded-full">
+                      <span className=" font-semibold rounded-full">
                         No
                       </span>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 font-semibold rounded-full`}>
+                    <span className={`font-semibold rounded-full`}>
                       {course.difficulty}
                     </span>
                   </td>
@@ -387,6 +396,15 @@ const CoursesPage = () => {
                         <TrashIcon className="w-5 h-5" />
                       </button>
                     </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <Link href={`/detail/${course.id}`} passHref>
+                      <span
+                        className={`font-semibold rounded-full cursor-pointer`}
+                      >
+                        Details
+                      </span>
+                    </Link>
                   </td>
                 </tr>
               ))}

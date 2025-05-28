@@ -73,6 +73,15 @@ const CourseForm = ({
           </div>
 
           <Input
+            label="Image Url"
+            placeholder="Enter course image"
+            name="image"
+            type="url"
+            value={course.image}
+            onChange={handleChange}
+            required
+          />
+          <Input
             label="Price"
             placeholder="Enter course price"
             name="price"
@@ -101,10 +110,10 @@ const CourseForm = ({
           />
 
           <Input
-            label="Duration"
+            label="Duration (in weeks)"
             placeholder="e.g., 6 weeks"
             name="duration"
-            type="text"
+            type="number"
             value={course.duration}
             onChange={handleChange}
             required
@@ -148,12 +157,12 @@ const CourseForm = ({
             Languages <span className="text-red">*</span>
           </label>
           <div className="flex flex-wrap gap-4">
-            {["English", "Hindi", "Spanish", "French", "German"].map((lang) => (
+            {["English", "Hindi"].map((lang) => (
               <label key={lang} className="flex items-center">
                 <input
                   type="checkbox"
-                  value={lang.toLowerCase()}
-                  checked={course.languages.includes(lang.toLowerCase())}
+                  value={lang}
+                  checked={course.languages.includes(lang)}
                   onChange={handleLanguageChange}
                   className="mr-2"
                 />
@@ -291,7 +300,6 @@ const CourseForm = ({
               </button>
             </div>
           ))}
-         
         </div>
 
         {/* Requirements */}

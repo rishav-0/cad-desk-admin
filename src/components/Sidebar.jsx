@@ -35,6 +35,14 @@ export default function Sidebar() {
         >
           Banner
         </Link>
+        <Link
+          href="/enquiry"
+          className={`block p-2 rounded hover:bg-black hover:text-white transition-colors ${
+            pathname === "/enquiry" ? "bg-black text-white" : ""
+          }`}
+        >
+          Enquiry
+        </Link>
       </nav>
     </div>
   );
