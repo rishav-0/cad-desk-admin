@@ -1,14 +1,9 @@
 import React, { useState } from "react";
 
-import {
-  Button,
-  Drawer,
-
-} from "@material-tailwind/react";
+import { Button, Drawer } from "@material-tailwind/react";
 
 import Input from "@/components/Input";
 import Select from "react-select";
-
 
 const Bannerform = ({
   showForm,
@@ -34,7 +29,6 @@ const Bannerform = ({
       ? banner.category.map((cat) => ({ label: cat, value: cat }))
       : []
   );
-  
 
   const handleSelect = (course) => {
     setSelectCourse((prev) => {
@@ -110,12 +104,44 @@ const Bannerform = ({
                   target: { name: "category", value: selectedValues },
                 });
 
-                // Remove courses that no longer match any selected category
-                const filtered = selectCourse.filter((course) =>
-                  selectedValues.includes(course.category)
-                );
-                setSelectCourse(filtered);
-                setBannerCourse(filtered);
+                // If categories are selected
+                if (selectedValues.length > 0) {
+                  // Get all courses that match the selected categories
+                  const matchingCourses = courses.filter((course) =>
+                    selectedValues.includes(course.category)
+                  );
+
+                  // If no courses are currently selected, auto-select all matching courses
+                  if (selectCourse.length === 0) {
+                    setSelectCourse(matchingCourses);
+                    setBannerCourse(matchingCourses);
+                  } else {
+                    // Remove courses that no longer match any selected category
+                    // and add any new matching courses that weren't previously selected
+                    const currentlySelectedIds = selectCourse.map(
+                      (course) => course.id
+                    );
+                    const filtered = selectCourse.filter((course) =>
+                      selectedValues.includes(course.category)
+                    );
+
+                    // Add any matching courses that weren't already selected
+                    const newMatchingCourses = matchingCourses.filter(
+                      (course) => !currentlySelectedIds.includes(course.id)
+                    );
+
+                    const updatedSelection = [
+                      ...filtered,
+                      ...newMatchingCourses,
+                    ];
+                    setSelectCourse(updatedSelection);
+                    setBannerCourse(updatedSelection);
+                  }
+                } else {
+                  // If no categories selected, clear courses
+                  setSelectCourse([]);
+                  setBannerCourse([]);
+                }
               }}
             />
           </div>
@@ -270,11 +296,7 @@ const Bannerform = ({
               <Button variant="outlined" color="black" onClick={handleOpen}>
                 Cancel
               </Button>
-              <Button
-               
-                color="green"
-                onClick={handleConfirmSelection}
-              >
+              <Button color="green" onClick={handleConfirmSelection}>
                 Confirm
               </Button>
             </div>

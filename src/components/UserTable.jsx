@@ -108,7 +108,7 @@ const UserTable = ({ allforms }) => {
   };
 
   return (
-    <div className="flex items-center justify-center px-8">
+    <div className="flex items-center border border-accent justify-center ">
       {/* Remarks Dialog */}
       {remarksDialog.open && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -169,7 +169,7 @@ const UserTable = ({ allforms }) => {
         </div>
       )}
 
-      <div className="items-center w-full mx-auto bg-white rounded-lg shadow-md sm:max-w-4xl">
+      <div className="items-center w-full mx-auto bg-white rounded-lg sm:max-w-4xl">
         <div className="mx-auto">
           {updateError && (
             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
@@ -233,11 +233,23 @@ const UserTable = ({ allforms }) => {
                             {user.name}
                           </div>
                           <div className="text-sm text-blue-600 dark:text-gray-200">
-                            {user.phone}
+                            <a
+                              href={`tel:${user.phone}`}
+                              className="hover:underline"
+                            >
+                              {user.phone}
+                            </a>
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-4">{user.email}</td>
+                      <td className="px-4 py-4">
+                        <a
+                          href={`mailto:${user.email}`}
+                          className="hover:underline"
+                        >
+                          {user.email}
+                        </a>
+                      </td>
                       <td className="px-4 py-4">
                         <div className="relative">
                           <div className="flex items-center">
@@ -297,7 +309,7 @@ const UserTable = ({ allforms }) => {
                                 </option>
                                 <option
                                   value="remarks"
-                                  className="text-blue-500"
+                                  className="text-orange-500"
                                 >
                                   Remarks
                                 </option>
@@ -341,7 +353,7 @@ const UserTable = ({ allforms }) => {
                       <td className="p-4">
                         <div
                           id={`${user.id}Toggle`}
-                          className="text-white bg-gray-100 border rounded-lg px-4 py-4 text-center inline-flex items-center"
+                          className="text-white border-accent border rounded-lg p-1 text-center inline-flex items-center"
                         >
                           <svg
                             className={`w-4 h-4 transition-transform ${
@@ -359,7 +371,7 @@ const UserTable = ({ allforms }) => {
                     </tr>
                     <tr
                       id={`${user.id}Description`}
-                      className={`py-4 px-4 border-t border-gray-200 ${
+                      className={`py-4 px-4 border-y border-gray-200 ${
                         activeDescriptionId === user.id ? "" : "hidden"
                       }`}
                     >
@@ -392,6 +404,14 @@ const UserTable = ({ allforms }) => {
                           <div>
                             <p className="font-semibold">Office/College:</p>
                             <p>{user?.office}</p>
+                          </div>
+                          <div>
+                            <a
+                              href={`tel:${user.phone}`}
+                              className="hover:underline"
+                            >
+                              <i className="fas fa-phone border p-2 cursor-pointer text-green-500 rounded-lg border-green-400"></i>
+                            </a>
                           </div>
                           {user.status === "remarks" && user.remarks && (
                             <div className="">

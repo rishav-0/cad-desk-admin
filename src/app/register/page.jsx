@@ -26,7 +26,7 @@ const page = () => {
       <h1 className="text-2xl mb-8 font-bold">Register Forms</h1>
 
       {formlist.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">No enquiry found.</div>
+        <div className="text-center py-12 text-gray-500">No Register found.</div>
       ) : (
         
         <RegisterTable allforms={formlist} />

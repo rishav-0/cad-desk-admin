@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 
-
-
 const RegisterTable = ({ allforms }) => {
   const [formlist, setFormlist] = useState(allforms);
   const [activeDescriptionId, setActiveDescriptionId] = useState(null);
@@ -65,7 +63,6 @@ const RegisterTable = ({ allforms }) => {
         )
       );
 
-    
       closeRemarksDialog();
     } catch (error) {
       console.error("Error saving remarks:", error);
@@ -74,7 +71,6 @@ const RegisterTable = ({ allforms }) => {
       setUpdatingId(null);
     }
   };
-  
 
   const handleStatusUpdate = async (id, newStatus) => {
     if (newStatus === "remarks") {
@@ -112,7 +108,7 @@ const RegisterTable = ({ allforms }) => {
   };
 
   return (
-    <div className="flex items-center justify-center px-8">
+    <div className="flex items-center justify-center ">
       {/* Remarks Dialog */}
       {remarksDialog.open && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -173,7 +169,7 @@ const RegisterTable = ({ allforms }) => {
         </div>
       )}
 
-      <div className="items-center w-full mx-auto bg-white rounded-lg shadow-md sm:max-w-4xl">
+      <div className="items-center w-full mx-auto bg-white border border-accent sm:max-w-4xl">
         <div className="mx-auto">
           {updateError && (
             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
@@ -220,7 +216,7 @@ const RegisterTable = ({ allforms }) => {
                 <tr className="text-sm font-normal text-gray-600 border-t border-b text-left bg-gray-50">
                   <th className="px-4 py-3">Name</th>
                   <th className="px-4 py-3">Email</th>
-                  <th className="px-4 py-3">Phone</th>
+
                   <th className="px-4 py-3">Status</th>
                   <th className="px-4 py-3"></th>
                 </tr>
@@ -237,14 +233,25 @@ const RegisterTable = ({ allforms }) => {
                           <div className="font-medium dark:text-white">
                             {form.personalDetail?.name}
                           </div>
+                          <div className="text-sm text-blue-600 dark:text-gray-200">
+                            <a
+                              href={`tel:${form.personalDetail?.phone}`}
+                              className="hover:underline"
+                            >
+                              {form.personalDetail?.phone}
+                            </a>
+                          </div>
                         </div>
                       </td>
                       <td className="px-4 py-4">
-                        {form.personalDetail?.email}
+                        <a
+                          href={`mailto:${form.personalDetail?.email}`}
+                          className="hover:underline"
+                        >
+                          {form.personalDetail?.email}
+                        </a>
                       </td>
-                      <td className="px-4 py-4">
-                        {form.personalDetail?.phone}
-                      </td>
+
                       <td className="px-4 py-4">
                         <div className="relative">
                           <div className="flex items-center">
@@ -259,7 +266,7 @@ const RegisterTable = ({ allforms }) => {
                             ></div>
                             <div className="relative">
                               <select
-                                value={form.status || "not registered"}
+                                value={form.status || "pending"}
                                 onChange={(e) =>
                                   handleStatusUpdate(form.id, e.target.value)
                                 }
@@ -279,6 +286,12 @@ const RegisterTable = ({ allforms }) => {
                                 }`}
                               >
                                 <option
+                                  value="pending"
+                                  className="text-orange-500"
+                                >
+                                  Pending
+                                </option>
+                                <option
                                   value="registered"
                                   className="text-green-500"
                                 >
@@ -292,7 +305,7 @@ const RegisterTable = ({ allforms }) => {
                                 </option>
                                 <option
                                   value="remarks"
-                                  className="text-blue-500"
+                                  className="text-orange-500"
                                 >
                                   Remarks
                                 </option>
@@ -336,7 +349,7 @@ const RegisterTable = ({ allforms }) => {
                       <td className="p-4">
                         <div
                           id={`${form.id}Toggle`}
-                          className="text-white bg-gray-100 border rounded-lg px-4 py-4 text-center inline-flex items-center"
+                          className="text-white border-accent border rounded-lg p-1 text-center inline-flex items-center"
                         >
                           <svg
                             className={`w-4 h-4 transition-transform ${
@@ -354,7 +367,7 @@ const RegisterTable = ({ allforms }) => {
                     </tr>
                     <tr
                       id={`${form.id}Description`}
-                      className={`py-4 px-4 border-t border-gray-200 ${
+                      className={`py-4 px-4 border-y border-accent ${
                         activeDescriptionId === form.id ? "" : "hidden"
                       }`}
                     >
@@ -414,12 +427,22 @@ const RegisterTable = ({ allforms }) => {
                             <p className="font-semibold">Registration Date:</p>
                             <p>{form.date}</p>
                           </div>
-                          {form.status === "remarks" && form.remarks && (
-                            <div className="">
-                              <p className="font-semibold">Remarks:</p>
-                              <p>{form.remarks}</p>
-                            </div>
-                          )}
+                          <div>
+                            <a
+                              href={`tel:${form.personalDetail?.phone}`}
+                              className="hover:underline"
+                            >
+                              <i className="fas fa-phone border p-2 cursor-pointer text-green-500 rounded-lg border-green-400"></i>
+                            </a>
+                          </div>
+                          {(form.status === "remarks" ||
+                            form.status === "pending") &&
+                            form.remarks && (
+                              <div className="">
+                                <p className="font-semibold">Remarks:</p>
+                                <p>{form.remarks}</p>
+                              </div>
+                            )}
                         </div>
                       </td>
                     </tr>

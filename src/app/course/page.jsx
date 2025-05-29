@@ -6,6 +6,12 @@ import {
   Button,
   Typography,
   IconButton,
+  Select,
+  Option,
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
 } from "@material-tailwind/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
@@ -254,12 +260,10 @@ const CoursesPage = () => {
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">Course Management</h1>
-        <button
-          onClick={toggleForm}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Create New Course
-        </button>
+
+        <Button onClick={toggleForm} className="bg-secondary">
+          Create new course
+        </Button>
       </div>
       {/* Course Form Modal */}
       <Drawer
@@ -313,30 +317,25 @@ const CoursesPage = () => {
       {courses.length === 0 ? (
         <div className="text-center py-12 text-gray-500">No courses found.</div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-gray-200 ">
-          <table className="min-w-full divide-y divide-gray-200">
+        <div className="overflow-x-auto border border-accent ">
+          <table className="min-w-full divide-y divide-accent">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider">
                   Course name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Price
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider">
                   Category
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider">
                   Certification
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider">
                   Difficulty
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider">
                   Actions
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Detail
                 </th>
               </tr>
             </thead>
@@ -348,63 +347,48 @@ const CoursesPage = () => {
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className=" font-semibold text-gray-900">
+                      <div className=" line-clamp-2 text-sm text-gray-900">
                         {course.title}
                       </div>
                     </div>
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className=" text-gray-900 font-semibold">
-                      ₹{course.price}
-                    </div>
+                    <span className=" text-sm ">{course.category}</span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className=" font-semibold ">
-                      {course.category}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 text-sm py-4 whitespace-nowrap">
                     {course.certification ? (
-                      <span className=" font-semibold rounded-full ">
-                        Yes
-                      </span>
+                      <span className="  rounded-full ">Yes</span>
                     ) : (
-                      <span className=" font-semibold rounded-full">
-                        No
-                      </span>
+                      <span className="  rounded-full">No</span>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`font-semibold rounded-full`}>
-                      {course.difficulty}
-                    </span>
+                    <span className={`text-sm rounded-full`}>{course.difficulty}</span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => handleEdit(course)}
-                        className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50"
-                        title="Edit"
-                      >
-                        <PencilIcon className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => deleteCourse(course.id)}
-                        className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
-                        title="Delete"
-                      >
-                        <TrashIcon className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Link href={`/detail/${course.id}`} passHref>
-                      <span
-                        className={`font-semibold rounded-full cursor-pointer`}
-                      >
-                        Details
-                      </span>
-                    </Link>
+                  <td className="px-6 py-4 text-center whitespace-nowrap text-sm font-medium">
+                    <Menu>
+                      <MenuHandler>
+                        <i className="fas text-xl cursor-pointer fa-ellipsis"></i>
+                      </MenuHandler>
+                      <MenuList>
+                        <MenuItem
+                          onClick={() => handleEdit(course)}
+                          className="text-blue-500"
+                        >
+                          Edit
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => deleteCourse(course.id)}
+                          className="text-red-500"
+                        >
+                          Delete
+                        </MenuItem>
+                        <Link href={`/detail/${course.id}`} passHref>
+                          <MenuItem>Details</MenuItem>
+                        </Link>
+                      </MenuList>
+                    </Menu>
                   </td>
                 </tr>
               ))}

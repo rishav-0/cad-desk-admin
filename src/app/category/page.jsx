@@ -129,7 +129,7 @@ const Category = () => {
             className={`px-4 py-2 ${
               isEmpty
                 ? "bg-slate-400 "
-                : "bg-black hover:bg-gray-800 transition-colors"
+                : "bg-[#13213c] hover:bg-gray-800 transition-colors"
             }text-sm text-white rounded `}
           >
             {EditId ? "Update Category" : "Save Category"}
@@ -148,7 +148,7 @@ const Category = () => {
 
       <hr />
 
-        <p className="text-xl font-semibold my-4">Category List</p>
+      <p className="text-xl font-semibold my-4">Category List</p>
       <div className="flex gap-2 mb-4 border-b border-slate-300 py-1">
         <MagnifyingGlassIcon className="w-5 text-slate-400" />
         <input
