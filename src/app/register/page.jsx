@@ -1,18 +1,19 @@
 "use client";
-import UserTable from "@/components/UserTable";
-import { fetchEnquiryData } from "@/service/enquiry";
-import { handleDelete } from "@/service/handleDelete";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
+
+
+import RegisterTable from "@/components/RegisterTable";
+import { fetchRegister } from "@/service/register";
 import React, { useEffect, useState } from "react";
 
 const page = () => {
   const [formlist, setFormlist] = useState([]);
 
   const getForm = async () => {
-    const res = await fetchEnquiryData();
+    const res = await fetchRegister();
     setFormlist(res);
   };
+
+
 
   useEffect(() => {
     getForm();
@@ -22,12 +23,13 @@ const page = () => {
 
   return (
     <div className="container p-4">
-      <h1 className="text-2xl mb-8 font-bold">Enquiry Forms</h1>
+      <h1 className="text-2xl mb-8 font-bold">Register Forms</h1>
 
       {formlist.length === 0 ? (
         <div className="text-center py-12 text-gray-500">No enquiry found.</div>
       ) : (
-        <UserTable allforms={formlist}/>
+        
+        <RegisterTable allforms={formlist} />
       )}
     </div>
   );
